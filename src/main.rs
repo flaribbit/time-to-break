@@ -1,5 +1,5 @@
 use windows::{
-    core::*,
+    core::Result,
     Win32::System::Com::{CoCreateInstance, CoInitialize, CLSCTX_ALL},
     Win32::UI::Shell::{IShellDispatch4, Shell},
 };
@@ -23,6 +23,11 @@ fn main() -> Result<()> {
     );
     loop {
         std::thread::sleep(std::time::Duration::from_secs(interval * 60));
+        notify_rust::Notification::new()
+            .summary("time-to-break")
+            .body("You should take a break!")
+            .show()
+            .ok();
         toggle_desktop(&shell)?;
     }
 }
