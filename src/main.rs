@@ -1,12 +1,8 @@
 use windows::{
     core::Result,
-    Win32::System::Com::{CoCreateInstance, CoInitialize, CLSCTX_ALL},
+    Win32::System::Com::{CoCreateInstance, CoInitialize, CLSCTX_INPROC_SERVER},
     Win32::UI::Shell::{IShellDispatch4, Shell},
 };
-
-fn toggle_desktop(shell: &IShellDispatch4) -> Result<()> {
-    unsafe { shell.ToggleDesktop() }
-}
 
 fn main() -> Result<()> {
     let interval = std::env::args()
@@ -15,10 +11,10 @@ fn main() -> Result<()> {
         .unwrap_or(20);
     let shell: IShellDispatch4 = unsafe {
         CoInitialize(None).ok()?;
-        CoCreateInstance(&Shell, None, CLSCTX_ALL)?
+        CoCreateInstance(&Shell, None, CLSCTX_INPROC_SERVER)?
     };
     println!(
-        "This program will toggle desktop every {} minutes",
+        "This program will minimize all windows every {} seconds.",
         interval
     );
     loop {
@@ -28,6 +24,6 @@ fn main() -> Result<()> {
             .body("You should take a break!")
             .show()
             .ok();
-        toggle_desktop(&shell)?;
+        unsafe { shell.MinimizeAll() }.ok();
     }
 }
