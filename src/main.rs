@@ -7,18 +7,19 @@ use windows::{
 fn main() -> Result<()> {
     let interval = std::env::args()
         .nth(1)
-        .map(|s| s.parse::<u64>().unwrap())
-        .unwrap_or(20);
+        .map(|s| s.parse::<f32>().unwrap())
+        .unwrap_or(20.0);
     let shell: IShellDispatch4 = unsafe {
         CoInitialize(None).ok()?;
         CoCreateInstance(&Shell, None, CLSCTX_INPROC_SERVER)?
     };
+    let duration = std::time::Duration::from_secs((interval * 60.0).round() as u64);
     println!(
-        "This program will minimize all windows every {} seconds.",
+        "This program will minimize all windows every {} minutes.",
         interval
     );
     loop {
-        std::thread::sleep(std::time::Duration::from_secs(interval * 60));
+        std::thread::sleep(duration);
         notify_rust::Notification::new()
             .summary("time-to-break")
             .body("You should take a break!")
