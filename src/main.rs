@@ -13,7 +13,7 @@ fn main() -> Result<()> {
         CoInitialize(None).ok()?;
         CoCreateInstance(&Shell, None, CLSCTX_INPROC_SERVER)?
     };
-    let duration = std::time::Duration::from_secs((interval * 60.0).round() as u64);
+    let duration = std::time::Duration::from_secs((interval * 60.0) as u64);
     println!(
         "This program will minimize all windows every {} minutes.",
         interval
